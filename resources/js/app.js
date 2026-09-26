@@ -10,7 +10,7 @@ window.orderForm = (clients) => ({
 	showClientModal: false,
 	savingClient: false,
 	clientError: '',
-	newClient: { name: '', phone: '' },
+	newClient: { name: '', internal_name: '', phone: '' },
 	get total() {
 		return this.items.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
 	},
@@ -43,7 +43,7 @@ window.orderForm = (clients) => ({
 
 			this.clients.push(data);
 			this.selectedClient = String(data.id);
-			this.newClient = { name: '', phone: '' };
+			this.newClient = { name: '', internal_name: '', phone: '' };
 			this.showClientModal = false;
 		} catch {
 			this.clientError = 'No se pudo conectar. Intenta de nuevo.';

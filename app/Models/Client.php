@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
-    protected $fillable = ['name', 'phone', 'notes'];
+    protected $fillable = ['name', 'internal_name', 'phone', 'notes'];
 
     protected $appends = ['total_purchased', 'current_due'];
 

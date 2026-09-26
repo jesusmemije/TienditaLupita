@@ -3,7 +3,7 @@
 @section('title', 'Nuevo pedido')
 
 @section('content')
-<section x-data="orderForm(@js($clients->map(fn ($client) => ['id' => $client->id, 'name' => $client->name])->values()))">
+<section x-data="orderForm(@js($clients->map(fn ($client) => ['id' => $client->id, 'name' => $client->name, 'internal_name' => $client->internal_name])->values()))">
     <div class="mb-5">
         <p class="text-xs font-bold uppercase tracking-[0.12em] text-[var(--brand)]">Nuevo encargo</p>
         <h1 class="mt-1 text-2xl font-extrabold">Crear pedido</h1>
@@ -19,7 +19,7 @@
             </div>
             <select id="client_id" name="client_id" x-model="selectedClient" required class="min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-rose-100">
                 <option value="">Elige un cliente</option>
-                <template x-for="client in clients" :key="client.id"><option :value="client.id" x-text="client.name"></option></template>
+                <template x-for="client in clients" :key="client.id"><option :value="client.id" x-text="client.internal_name ? client.name + ' · ' + client.internal_name : client.name"></option></template>
             </select>
             @error('client_id')<p class="mt-1 text-sm text-rose-700">{{ $message }}</p>@enderror
         </section>
@@ -63,7 +63,8 @@
                 <button type="button" @click="showClientModal = false" aria-label="Cerrar" class="grid size-10 place-items-center rounded-full bg-stone-100 text-xl">×</button>
             </div>
             <form @submit.prevent="createClient()" class="space-y-3">
-                <input x-model="newClient.name" type="text" required maxlength="255" placeholder="Nombre completo" class="min-h-12 w-full rounded-xl border border-stone-300 px-3 text-base focus:border-[var(--brand)] focus:outline-none">
+                <input x-model="newClient.name" type="text" required maxlength="255" placeholder="Nombre formal (para WhatsApp)" class="min-h-12 w-full rounded-xl border border-stone-300 px-3 text-base focus:border-[var(--brand)] focus:outline-none">
+                <input x-model="newClient.internal_name" type="text" maxlength="255" placeholder="Identificador interno (opcional)" class="min-h-12 w-full rounded-xl border border-stone-300 px-3 text-base focus:border-[var(--brand)] focus:outline-none">
                 <input x-model="newClient.phone" type="tel" required maxlength="30" placeholder="WhatsApp con clave de país" class="min-h-12 w-full rounded-xl border border-stone-300 px-3 text-base focus:border-[var(--brand)] focus:outline-none">
                 <p x-show="clientError" x-text="clientError" class="text-sm text-rose-700" role="alert"></p>
                 <button type="submit" :disabled="savingClient" class="min-h-13 w-full rounded-xl bg-[var(--brand)] px-4 font-bold text-white disabled:opacity-60" x-text="savingClient ? 'Guardando…' : 'Guardar y seleccionar'"></button>

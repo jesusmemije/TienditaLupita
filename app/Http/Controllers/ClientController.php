@@ -18,6 +18,7 @@ class ClientController extends Controller
             ->withSum('orders as current_due', 'due_amount')
             ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
                 ->where('name', 'like', '%'.$search.'%')
+                ->orWhere('internal_name', 'like', '%'.$search.'%')
                 ->orWhere('phone', 'like', '%'.$search.'%')))
             ->orderBy('name')
             ->get();
@@ -29,6 +30,7 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'internal_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
             'notes' => ['nullable', 'string'],
         ]);
@@ -36,9 +38,27 @@ class ClientController extends Controller
         $client = Client::create($validated);
 
         if ($request->expectsJson()) {
-            return response()->json(['id' => $client->id, 'name' => $client->name]);
+            return response()->json([
+                'id' => $client->id,
+                'name' => $client->name,
+                'internal_name' => $client->internal_name,
+            ]);
         }
 
         return redirect()->route('clients.index')->with('success', 'Cliente agregado.');
+    }
+
+    public function update(Request $request, Client $client): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'internal_name' => ['nullable', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:30'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $client->update($validated);
+
+        return redirect()->route('clients.index')->with('success', 'Cliente actualizado.');
     }
 }

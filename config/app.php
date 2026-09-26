@@ -54,6 +54,15 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'admin' => [
+        'name' => env('ADMIN_NAME'),
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
+
+    'contact_phone' => env('TIENDITA_CONTACT_PHONE'),
+    'business_location' => env('TIENDITA_LOCATION'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

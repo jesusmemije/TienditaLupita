@@ -16,7 +16,7 @@
     @endphp
     <article class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: 0 }">
         <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0"><p class="truncate text-lg font-extrabold">{{ $order->client->name }}</p><p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ $order->items->count() }} {{ $order->items->count() === 1 ? 'producto' : 'productos' }}</p></div>
+            <div class="min-w-0"><p class="truncate text-lg font-extrabold">{{ $order->client->name }}</p>@if ($order->client->internal_name)<p class="truncate text-xs font-semibold text-[var(--brand-dark)]">{{ $order->client->internal_name }}</p>@endif<p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ $order->items->count() }} {{ $order->items->count() === 1 ? 'producto' : 'productos' }}</p></div>
             <span class="shrink-0 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Por entregar</span>
         </div>
         <div class="my-4 space-y-1 border-y border-stone-100 py-3">
