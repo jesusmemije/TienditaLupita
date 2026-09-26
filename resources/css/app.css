@@ -9,3 +9,24 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+:root {
+    --brand: #c63f64;
+    --brand-dark: #99294a;
+    --ink: #24211f;
+    --canvas: #f7f7f3;
+}
+
+body {
+    background: var(--canvas);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
