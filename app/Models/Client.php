@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Appends(['total_purchased', 'current_due'])]
 class Client extends Model
 {
     protected $fillable = ['name', 'phone', 'notes'];
+
+    protected $appends = ['total_purchased', 'current_due'];
 
     public function orders(): HasMany
     {

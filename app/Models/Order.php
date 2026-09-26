@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Appends(['item_count'])]
 class Order extends Model
 {
+    protected $appends = ['item_count'];
+
     protected $fillable = [
         'client_id', 'status', 'total_amount', 'paid_amount', 'due_amount', 'delivered_at',
     ];
