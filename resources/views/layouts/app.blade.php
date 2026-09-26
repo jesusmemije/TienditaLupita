@@ -47,7 +47,7 @@
     </div>
 
     <nav class="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 px-2 pt-2 shadow-[0_-8px_24px_rgba(36,33,31,0.07)] backdrop-blur" aria-label="Navegación principal">
-        <div class="mx-auto grid max-w-2xl grid-cols-6 items-end gap-1 pb-1">
+        <div class="mx-auto grid max-w-xl grid-cols-5 items-end gap-1 pb-1">
             <a href="{{ route('orders.index') }}" @class(['flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold', 'text-[var(--brand)]' => request()->routeIs('orders.index'), 'text-stone-500' => !request()->routeIs('orders.index')])>
                 <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m3.5 7.8 8.5 4.4 8.5-4.4M12 12.5V21"/></svg>
                 Pedidos
@@ -56,13 +56,9 @@
                 <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m4-14H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H7"/></svg>
                 Deudas
             </a>
-            <a href="{{ route('store-debts.index') }}" @class(['flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold', 'text-[var(--brand)]' => request()->routeIs('store-debts.*'), 'text-stone-500' => !request()->routeIs('store-debts.*')])>
-                <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8h18l-1.5 12h-15L3 8Zm4 0 5-5 5 5M8 12v4m4-4v4m4-4v4"/></svg>
+            <a href="{{ route('store-debts.index') }}" aria-label="Fiado de tienda física" @class(['-mt-5 flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--brand)] px-2 text-[10px] font-bold text-white shadow-lg shadow-rose-900/20 active:scale-95', 'ring-2 ring-white' => request()->routeIs('store-debts.*')])>
+                <span class="grid size-8 place-items-center rounded-full bg-white/15"><svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8h18l-1.5 12h-15L3 8Zm4 0 5-5 5 5M8 12v4m4-4v4m4-4v4"/></svg></span>
                 Fiado
-            </a>
-            <a href="{{ route('orders.create') }}" class="-mt-5 flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl bg-[var(--brand)] px-2 text-[10px] font-bold text-white shadow-lg shadow-rose-900/20 active:scale-95">
-                <span class="grid size-8 place-items-center rounded-full bg-white/15"><svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg></span>
-                Nuevo
             </a>
             <a href="{{ route('clients.index') }}" @class(['flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold', 'text-[var(--brand)]' => request()->routeIs('clients.*'), 'text-stone-500' => !request()->routeIs('clients.*')])>
                 <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 20v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 18.5V20m6-10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm6-6.5a3.5 3.5 0 0 1 0 6.8m1.5 3.2a4.5 4.5 0 0 1 3.5 4.4V20"/></svg>
