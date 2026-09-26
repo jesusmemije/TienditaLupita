@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Vite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,12 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Define public_html como la carpeta pública de Laravel
-        $this->app->bind('path.public', function () {
-            return base_path('../public_html');
-        });
-
-        // Configura la ubicación del directorio de Vite
-        Vite::useBuildDirectory('build');
+        //
     }
 }
