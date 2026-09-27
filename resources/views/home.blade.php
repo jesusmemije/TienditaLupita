@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f7f7f3">
     <title>Tiendita Lupita | Hallazgos que se sienten tuyos</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,7 +13,7 @@
 <body class="bg-[var(--canvas)] font-sans text-[var(--ink)] antialiased">
     <header class="absolute inset-x-0 top-0 z-10">
         <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8" aria-label="Navegación principal">
-            <a href="#inicio" class="flex items-center gap-3 text-white"><span class="grid size-10 place-items-center rounded-xl border border-white/50 text-sm font-black">TL</span><span class="text-sm font-extrabold">Tiendita Lupita</span></a>
+            <a href="#inicio" class="flex items-center gap-3 text-white"><img src="{{ asset('favicon.svg') }}" alt="" class="size-10 shrink-0 rounded-full"><span class="text-sm font-extrabold">Tiendita Lupita</span></a>
             <div class="hidden items-center gap-7 text-sm font-semibold text-white/90 sm:flex"><a href="#colecciones" class="hover:text-white">Lo que encuentras</a><a href="#ventajas" class="hover:text-white">La experiencia</a><a href="#contacto" class="hover:text-white">Contacto</a></div>
             <a href="{{ route('login') }}" class="rounded-lg border border-white/60 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-stone-900">Acceso admin</a>
         </nav>

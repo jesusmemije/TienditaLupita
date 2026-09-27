@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Acceso administrador | Tiendita Lupita</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,14 +13,14 @@
 <body class="min-h-screen bg-[var(--canvas)] font-sans text-[var(--ink)] antialiased">
     <main class="mx-auto grid min-h-screen max-w-5xl items-center gap-10 px-5 py-10 md:grid-cols-[1fr_380px] md:px-10">
         <section class="hidden md:block">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-3 text-sm font-bold text-stone-600"><span class="grid size-10 place-items-center rounded-xl bg-[var(--brand)] text-white">TL</span> Tiendita Lupita</a>
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-3 text-sm font-bold text-stone-600"><img src="{{ asset('favicon.svg') }}" alt="" class="size-10 shrink-0 rounded-full"> Tiendita Lupita</a>
             <p class="mt-14 text-xs font-bold uppercase tracking-[0.15em] text-[var(--brand)]">Administración</p>
             <h1 class="mt-3 max-w-lg text-5xl font-black leading-[1.05]">Tu negocio, al día.</h1>
             <p class="mt-4 max-w-md text-lg text-stone-600">Pedidos SHEIN y cuentas de tienda en un solo panel privado.</p>
         </section>
 
         <section class="mx-auto w-full max-w-sm">
-            <a href="{{ route('home') }}" class="mb-8 inline-flex items-center gap-3 text-sm font-bold md:hidden"><span class="grid size-10 place-items-center rounded-xl bg-[var(--brand)] text-white">TL</span> Tiendita Lupita</a>
+            <a href="{{ route('home') }}" class="mb-8 inline-flex items-center gap-3 text-sm font-bold md:hidden"><img src="{{ asset('favicon.svg') }}" alt="" class="size-10 shrink-0 rounded-full"> Tiendita Lupita</a>
             <div class="border-y border-stone-300 py-8 md:border md:border-stone-200 md:bg-white md:px-7 md:shadow-sm">
                 <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--brand)]">Acceso privado</p>
                 <h2 class="mt-2 text-2xl font-extrabold">Iniciar sesión</h2>

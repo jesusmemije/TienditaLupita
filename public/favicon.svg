@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Degradado rosa moderno -->
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F472B6" />
+      <stop offset="50%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#BE185D" />
+    </linearGradient>
+
+    <!-- Sombra suave de elevación -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#831843" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Fondo circular perfecto para Facebook y Favicon -->
+  <circle cx="256" cy="256" r="240" fill="url(#pinkGrad)" />
+
+  <!-- Anillo interior punteado decorativo -->
+  <circle cx="256" cy="256" r="222" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-opacity="0.4" stroke-dasharray="12 8" />
+
+  <!-- Grupo central (Bolsa de compras + Detalle) -->
+  <g filter="url(#softShadow)">
+    
+    <!-- Asa de la bolsa -->
+    <path d="M 196 180 C 196 120, 316 120, 316 180" 
+          fill="none" 
+          stroke="#FFFFFF" 
+          stroke-width="20" 
+          stroke-linecap="round" />
+
+    <!-- Cuerpo de la bolsa de compras -->
+    <path d="M 150 180 L 362 180 C 374 180, 382 190, 380 202 L 360 380 C 358 392, 348 400, 336 400 L 176 400 C 164 400, 154 392, 152 380 L 132 202 C 130 190, 138 180, 150 180 Z" 
+          fill="#FFFFFF" />
+
+    <!-- Corazón calado rosa en el centro -->
+    <path d="M 256 295 
+             C 256 295, 215 265, 215 245 
+             C 215 230, 227 218, 242 218 
+             C 251 218, 256 223, 256 223 
+             C 256 223, 261 218, 270 218 
+             C 285 218, 297 230, 297 245 
+             C 297 265, 256 295, 256 295 Z" 
+          fill="#EC4899" />
+
+    <!-- Destellos / Estrellas blancas alrededor -->
+    <path d="M 120 130 Q 120 145 105 145 Q 120 145 120 160 Q 120 145 135 145 Q 120 145 120 130 Z" fill="#FFFFFF" />
+    <path d="M 390 120 Q 390 132 378 132 Q 390 132 390 144 Q 390 132 402 132 Q 390 132 390 120 Z" fill="#FFFFFF" />
+    <path d="M 395 320 Q 395 330 385 330 Q 395 330 395 340 Q 395 330 405 330 Q 395 330 395 320 Z" fill="#FFFFFF" opacity="0.8" />
+  </g>
+</svg>

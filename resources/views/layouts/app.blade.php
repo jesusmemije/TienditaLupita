@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#f7f7f3">
     <title>@yield('title', 'Pedidos') | Tiendita Lupita</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -15,7 +16,7 @@
         <header class="sticky top-0 z-20 -mx-4 border-b border-stone-200/80 bg-[var(--canvas)]/95 px-4 pb-3 pt-4 backdrop-blur sm:-mx-6 sm:px-6">
             <div class="flex items-center justify-between gap-3">
                 <a href="{{ route('admin') }}" class="flex items-center gap-3" aria-label="Tiendita Lupita, panel">
-                    <span class="grid size-11 place-items-center rounded-2xl bg-[var(--brand)] text-lg font-black text-white">TL</span>
+                    <img src="{{ asset('favicon.svg') }}" alt="" class="size-11 shrink-0 rounded-full">
                     <span>
                         <span class="block text-lg font-extrabold leading-tight tracking-normal">Tiendita Lupita</span>
                         <span class="block text-xs font-medium text-stone-500">Panel de administración</span>
