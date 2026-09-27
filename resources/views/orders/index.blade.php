@@ -17,7 +17,7 @@
 @forelse ($orders as $order)
     @php
         $details = $order->items->map(fn ($item) => '- '.$item->product_name.': $'.number_format((float) $item->price, 2))->implode("\n");
-        $message = "¡Hola {$order->client->name}! Tu pedido de SHEIN ya llegó 📦.\nDetalle de tus productos:\n{$details}\n*Total a pagar contra entrega: $".number_format((float) $order->total_amount, 2)."*\nPuedes pasar por él a mi domicilio. ¡Avísame cuando vengas!\n\n— Enviado desde Tiendita Lupita 🛍️";
+        $message = "¡Hola {$order->client->name}! Tu pedido de SHEIN ya llegó 📦.\n\nDetalle de tus productos:\n{$details}\n\n*Total a pagar contra entrega: $".number_format((float) $order->total_amount, 2)."*\n(Nota: Los precios de los productos ya cuentan con la comisión por prenda incluida) ✨\n\nPuedes pasar por él a mi domicilio. ¡Avísame cuando vengas!\n\n— Enviado desde Tiendita Lupita 🛍️";
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
     <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: 0 }">

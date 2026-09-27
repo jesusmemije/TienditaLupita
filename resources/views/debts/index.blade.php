@@ -11,7 +11,16 @@
 
 @forelse ($orders as $order)
     @php
-        $message = "Hola {$order->client->name}, te comparto un recordatorio amable: tu pedido tiene un saldo pendiente de $".number_format((float) $order->due_amount, 2).". ¡Gracias!";
+        $details = $order->items
+            ->map(fn ($item) => '- '.$item->product_name.': $'.number_format((float) $item->price, 2))
+            ->implode("\n");
+        $message = "¡Hola {$order->client->name}! 😊 Te envío un cordial recordatorio con el estado de tu pedido de SHEIN:\n\n"
+            ."📦 *Detalle de tus productos:*\n{$details}\n\n"
+            .'💰 *Total del pedido:* $'.number_format((float) $order->total_amount, 2)."\n"
+            .'✅ *Abono/Anticipo registrado:* $'.number_format((float) $order->paid_amount, 2)."\n"
+            .'📌 *Resta por liquidar:* $'.number_format((float) $order->due_amount, 2)."\n\n"
+            .'Quedo a tus órdenes si tienes alguna duda o cuando gustes realizar tu pago. ¡Que tengas un excelente día! ✨' ."\n\n"
+            .'— Tiendita Lupita 🛍️';
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
     <article class="mb-4 rounded-xl border border-rose-100 bg-white p-4 shadow-sm" x-data="{ amount: '', error: '' }">

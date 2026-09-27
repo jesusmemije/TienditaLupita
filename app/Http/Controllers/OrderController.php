@@ -90,7 +90,7 @@ class OrderController extends Controller
 
     public function debts(): View
     {
-        $orders = Order::with('client')
+        $orders = Order::with(['client', 'items'])
             ->where('due_amount', '>', 0)
             ->latest('delivered_at')
             ->get();
@@ -162,12 +162,13 @@ class OrderController extends Controller
         $details = $order->items
             ->map(fn ($item) => $item->product_name.' - $'.number_format((float) $item->price, 2))
             ->implode("\n");
-        $message = "¡Hola {$order->client->name}! 😊 Te comparto el resumen actualizado de tu pedido en Tiendita Lupita:\n\n"
-            ."📦 Detalle del pedido:\n{$details}\n"
-            .'💰 Total del pedido: $'.number_format((float) $order->total_amount, 2)."\n"
-            .'✅ Abono / Anticipo recibido: $'.number_format($paymentAmount, 2)."\n"
-            .'📌 Saldo restante a liquidar: $'.number_format((float) $order->due_amount, 2)."\n\n"
-            .'¡Muchas gracias por tu confianza! Si tienes alguna duda, me avisas. ✨';
+        $message = "¡Hola {$order->client->name}! 😊 Muchas gracias por tu abono. Te comparto el resumen actualizado de tu pedido:\n\n"
+            ."📦 *Detalle de tus productos:*\n{$details}\n\n"
+            .'💰 *Total del pedido:* $'.number_format((float) $order->total_amount, 2)."\n"
+            .'✅ *Abono/Anticipo recibido:* $'.number_format($paymentAmount, 2)."\n"
+            .'📌 *Saldo pendiente a liquidar:* $'.number_format((float) $order->due_amount, 2)."\n\n"
+            .'¡Muchas gracias por tu confianza y preferencia! Me avisas si necesitas algo más. ✨' ."\n\n"
+            .'— Tiendita Lupita 🛍️';
         $phone = preg_replace('/\D+/', '', $order->client->phone);
 
         return 'https://wa.me/'.$phone.'?text='.rawurlencode($message);
