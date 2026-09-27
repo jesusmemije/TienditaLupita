@@ -19,7 +19,7 @@
             .'💰 *Total del pedido:* $'.number_format((float) $order->total_amount, 2)."\n"
             .'✅ *Abono/Anticipo registrado:* $'.number_format((float) $order->paid_amount, 2)."\n"
             .'📌 *Resta por liquidar:* $'.number_format((float) $order->due_amount, 2)."\n\n"
-            .'Quedo a tus órdenes si tienes alguna duda o cuando gustes realizar tu pago. ¡Que tengas un excelente día! ✨' ."\n\n"
+            .'Quedo a tus órdenes si tienes alguna duda y cuando gustes puedes realizar tu pago. ¡Que tengas un excelente día! ✨' ."\n\n"
             .'— Tiendita Lupita 🛍️';
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
