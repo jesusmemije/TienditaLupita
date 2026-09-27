@@ -3,6 +3,30 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+window.liveSearch = () => ({
+	query: '',
+	root: null,
+	init(root, initialQuery = '') {
+		this.root = root;
+		this.query = initialQuery;
+	},
+	normalize(value) {
+		return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+	},
+	matches(value) {
+		const query = this.normalize(this.query.trim());
+
+		return query === '' || this.normalize(value).includes(query);
+	},
+	visibleCount() {
+	return Array.from(this.root.querySelectorAll('[data-live-search-item]'))
+			.filter((item) => this.matches(item.dataset.search || '')).length;
+	},
+	hasVisibleItems() {
+		return this.visibleCount() > 0;
+	},
+});
+
 window.orderForm = (clients) => ({
 	clients,
 	items: [{ key: Date.now(), product_name: '', price: '' }],

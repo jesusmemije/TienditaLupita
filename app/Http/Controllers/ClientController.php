@@ -14,12 +14,9 @@ class ClientController extends Controller
     {
         $search = trim((string) $request->query('q'));
         $clients = Client::query()
-            ->withSum(['orders as total_purchased' => fn ($query) => $query->whereIn('status', ['delivered_paid', 'delivered_partial'])], 'total_amount')
+            ->withSum(['orders as total_paid' => fn ($query) => $query->whereIn('status', ['delivered_paid', 'delivered_partial'])], 'paid_amount')
             ->withSum('orders as current_due', 'due_amount')
-            ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
-                ->where('name', 'like', '%'.$search.'%')
-                ->orWhere('internal_name', 'like', '%'.$search.'%')
-                ->orWhere('phone', 'like', '%'.$search.'%')))
+            ->withSum(['orders as pending_orders_total' => fn ($query) => $query->where('status', 'pending_delivery')], 'total_amount')
             ->orderBy('name')
             ->get();
 

@@ -3,10 +3,16 @@
 @section('title', 'Pedidos activos')
 
 @section('content')
+<div x-data="liveSearch()" x-init="init($el)">
 <div class="mb-5 flex items-end justify-between gap-3">
-    <div><p class="text-xs font-bold uppercase tracking-[0.12em] text-[var(--brand)]">Tu tienda, al día</p><h1 class="mt-1 text-2xl font-extrabold">Pedidos activos</h1><p class="mt-1 text-sm text-stone-500">{{ $orders->count() }} {{ $orders->count() === 1 ? 'pedido por entregar' : 'pedidos por entregar' }}</p></div>
+    <div><p class="text-xs font-bold uppercase tracking-[0.12em] text-[var(--brand)]">Tu tienda, al día</p><h1 class="mt-1 text-2xl font-extrabold">Pedidos activos</h1><p class="mt-1 text-sm text-stone-500" x-text="visibleCount() + ' ' + (visibleCount() === 1 ? 'pedido por entregar' : 'pedidos por entregar')">{{ $orders->count() }} {{ $orders->count() === 1 ? 'pedido por entregar' : 'pedidos por entregar' }}</p></div>
     <a href="{{ route('orders.create') }}" class="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand)] text-2xl font-light text-white shadow-md" aria-label="Crear pedido">+</a>
 </div>
+
+    <div class="mb-4">
+        <label for="search-orders" class="sr-only">Buscar pedido por cliente</label>
+        <input id="search-orders" x-model.debounce.150ms="query" type="search" placeholder="Buscar por cliente o identificador" class="min-h-12 w-full rounded-xl border border-stone-300 bg-white px-4 text-base outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-rose-100">
+    </div>
 
 @forelse ($orders as $order)
     @php
@@ -14,7 +20,7 @@
         $message = "¡Hola {$order->client->name}! Tu pedido de SHEIN ya llegó 📦.\nDetalle de tus productos:\n{$details}\n*Total a pagar contra entrega: $".number_format((float) $order->total_amount, 2)."*\nPuedes pasar por él a mi domicilio. ¡Avísame cuando vengas!\n\n— Enviado desde Tiendita Lupita 🛍️";
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
-    <article class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: 0 }">
+    <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: 0 }">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0"><p class="truncate text-lg font-extrabold">{{ $order->client->name }}</p>@if ($order->client->internal_name)<p class="truncate text-xs font-semibold text-[var(--brand-dark)]">{{ $order->client->internal_name }}</p>@endif<p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ $order->items->count() }} {{ $order->items->count() === 1 ? 'producto' : 'productos' }}</p></div>
             <span class="shrink-0 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Por entregar</span>
@@ -51,11 +57,13 @@
         </div>
     </article>
 @empty
-    <section class="rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-12 text-center">
+    <section x-cloak x-show="!query.trim()" class="rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-12 text-center">
         <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-rose-50 text-2xl">📦</span>
         <h2 class="mt-4 text-lg font-bold">Todo entregado por ahora</h2>
         <p class="mt-1 text-sm text-stone-500">Cuando llegue un encargo, crea un pedido y aparecerá aquí.</p>
         <a href="{{ route('orders.create') }}" class="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--brand)] px-5 font-bold text-white">Crear pedido</a>
     </section>
 @endforelse
+<section x-cloak x-show="query.trim() && !hasVisibleItems()" class="mb-4 rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-10 text-center"><h2 class="font-bold">No encontramos pedidos</h2><p class="mt-1 text-sm text-stone-500">Prueba con otro nombre o identificador.</p></section>
+</div>
 @endsection
