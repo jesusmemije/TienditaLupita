@@ -11,10 +11,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[var(--canvas)] font-sans text-[var(--ink)] antialiased">
+    @php
+        $whatsappPhone = preg_replace('/\D+/', '', (string) config('app.contact_phone'));
+        $orderMessage = rawurlencode('Hola, quiero hacer un pedido en Tiendita Lupita.');
+        $orderWhatsappUrl = $whatsappPhone !== ''
+            ? 'https://wa.me/'.$whatsappPhone.'?text='.$orderMessage
+            : '#contacto';
+    @endphp
     <header class="absolute inset-x-0 top-0 z-10">
         <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8" aria-label="Navegación principal">
             <a href="#inicio" class="flex items-center gap-3 text-white"><img src="{{ asset('favicon.svg') }}" alt="" class="size-10 shrink-0 rounded-full"><span class="text-sm font-extrabold">Tiendita Lupita</span></a>
-            <div class="hidden items-center gap-7 text-sm font-semibold text-white/90 sm:flex"><a href="#colecciones" class="hover:text-white">Lo que encuentras</a><a href="#ventajas" class="hover:text-white">La experiencia</a><a href="#contacto" class="hover:text-white">Contacto</a></div>
+            <div class="hidden items-center gap-7 text-sm font-semibold text-white/90 sm:flex"><a href="#colecciones" class="hover:text-white">Lo que encuentras</a><a href="#como-pedir" class="hover:text-white">Cómo pedir</a><a href="#ventajas" class="hover:text-white">La experiencia</a><a href="#contacto" class="hover:text-white">Contacto</a></div>
             <a href="{{ route('login') }}" class="rounded-lg border border-white/60 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-stone-900">Acceso admin</a>
         </nav>
     </header>
@@ -38,20 +45,63 @@
             </div>
             <div class="grid gap-4 md:grid-cols-3">
                 <article class="group relative min-h-80 overflow-hidden bg-stone-900 text-white">
-                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80" alt="Moda y tendencias" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=900&q=80" alt="Prendas seleccionadas para un pedido por encargo" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">Por encargo</p><h3 class="mt-2 text-2xl font-extrabold">SHEIN</h3><p class="mt-2 max-w-xs text-sm text-white/80">Arma tu pedido y te avisamos en cuanto llegue.</p></div>
                 </article>
                 <article class="group relative min-h-80 overflow-hidden bg-stone-700 text-white">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80" alt="Interior de una tienda de ropa" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80" alt="Prendas de uso diario en una tienda de ropa" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">En persona</p><h3 class="mt-2 text-2xl font-extrabold">Tienda física</h3><p class="mt-2 max-w-xs text-sm text-white/80">Date una vuelta y descubre lo que tenemos disponible.</p></div>
                 </article>
                 <article class="group relative min-h-80 overflow-hidden bg-stone-700 text-white">
-                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80" alt="Selección de ropa y accesorios" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=900&q=80" alt="Prenda casual en exhibición" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">Recién llegado</p><h3 class="mt-2 text-2xl font-extrabold">Novedades</h3><p class="mt-2 max-w-xs text-sm text-white/80">Pequeños hallazgos y favoritos para renovar tu estilo.</p></div>
                 </article>
+            </div>
+        </section>
+
+        <section id="como-pedir" class="border-y border-pink-100 bg-[#fff7fa]">
+            <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 md:py-24">
+                <div class="mb-9 max-w-2xl">
+                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#BE185D]">En cinco pasos</p>
+                    <h2 class="mt-2 text-3xl font-black sm:text-4xl">Cómo realizar tu pedido</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-stone-600">Te acompañamos desde que eliges tu producto hasta que lo recoges.</p>
+                </div>
+
+                <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                    <li class="flex min-h-64 flex-col rounded-lg border border-pink-100 bg-white p-5 shadow-[0_8px_24px_rgba(190,24,93,0.08)]">
+                        <span class="grid size-11 place-items-center rounded-full bg-[#EC4899] text-sm font-black text-white">01</span>
+                        <h3 class="mt-5 text-lg font-extrabold">Envía tu producto 📱</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-stone-600">Envía la captura de pantalla o el enlace directo del producto que deseas por WhatsApp.</p>
+                        <a href="{{ $orderWhatsappUrl }}" target="{{ $whatsappPhone !== '' ? '_blank' : '_self' }}" rel="noopener" class="mt-auto inline-flex min-h-10 items-center pt-4 text-sm font-bold text-[#BE185D] hover:text-[#9D174D]">Iniciar pedido <span class="ml-2" aria-hidden="true">↗</span></a>
+                    </li>
+                    <li class="flex min-h-64 flex-col rounded-lg border border-pink-100 bg-white p-5 shadow-[0_8px_24px_rgba(190,24,93,0.08)]">
+                        <span class="grid size-11 place-items-center rounded-full bg-[#EC4899] text-sm font-black text-white">02</span>
+                        <h3 class="mt-5 text-lg font-extrabold">Especifica detalles 🎨</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-stone-600">Indícanos la talla, el color y las variantes exactas del producto que vas a encargar.</p>
+                    </li>
+                    <li class="flex min-h-64 flex-col rounded-lg border border-pink-100 bg-white p-5 shadow-[0_8px_24px_rgba(190,24,93,0.08)]">
+                        <span class="grid size-11 place-items-center rounded-full bg-[#EC4899] text-sm font-black text-white">03</span>
+                        <h3 class="mt-5 text-lg font-extrabold">Pago contra entrega 💵</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-stone-600">¡Sin anticipos complicados! Realizas tu pago al 100% únicamente cuando recibas tu paquete.</p>
+                    </li>
+                    <li class="flex min-h-64 flex-col rounded-lg border border-pink-100 bg-white p-5 shadow-[0_8px_24px_rgba(190,24,93,0.08)]">
+                        <span class="grid size-11 place-items-center rounded-full bg-[#EC4899] text-sm font-black text-white">04</span>
+                        <h3 class="mt-5 text-lg font-extrabold">Tiempo de espera ✈️</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-stone-600">Tu pedido llegará en un lapso estimado de 15 a 20 días hábiles.</p>
+                    </li>
+                    <li class="flex min-h-64 flex-col rounded-lg border border-pink-100 bg-white p-5 shadow-[0_8px_24px_rgba(190,24,93,0.08)]">
+                        <span class="grid size-11 place-items-center rounded-full bg-[#EC4899] text-sm font-black text-white">05</span>
+                        <h3 class="mt-5 text-lg font-extrabold">Notificación y entrega 🛍️</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-stone-600">Te avisaremos directamente por WhatsApp en cuanto tu pedido esté listo para ser recogido en nuestro domicilio.</p>
+                    </li>
+                </ol>
+
+                <div class="mt-10 text-center">
+                    <a href="{{ $orderWhatsappUrl }}" target="{{ $whatsappPhone !== '' ? '_blank' : '_self' }}" rel="noopener" class="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#BE185D] px-6 text-sm font-bold text-white shadow-md transition hover:bg-[#9D174D]">¡Hacer mi pedido por WhatsApp!</a>
+                </div>
             </div>
         </section>
 
