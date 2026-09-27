@@ -30,7 +30,10 @@
         </div>
         <div class="my-4 flex items-end justify-between border-y border-stone-100 py-3"><span class="text-sm text-stone-500">Debe</span><strong class="text-2xl font-extrabold tabular-nums text-[var(--brand-dark)]">${{ number_format((float) $order->due_amount, 2) }}</strong></div>
         <div class="grid gap-2 sm:grid-cols-2">
-            <a href="https://wa.me/{{ $phone }}?text={{ rawurlencode($message) }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-emerald-700 px-3 text-sm font-bold text-white">Recordatorio WhatsApp</a>
+            <a href="https://wa.me/{{ $phone }}?text={{ rawurlencode($message) }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-emerald-700 px-3 text-sm font-bold text-white">
+                <svg viewBox="0 0 24 24" class="size-5" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L0 24l6.5-1.7a11.9 11.9 0 0 0 5.6 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.2-3.5-8.4ZM12.1 21.7a9.9 9.9 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.4 4.7Zm5.4-7.3c-.3-.1-1.6-.8-1.9-.9s-.5-.1-.7.2-.7.9-.9 1.1-.3.2-.6.1a7.9 7.9 0 0 1-2.3-1.4 8.6 8.6 0 0 1-1.6-2c-.2-.3 0-.4.1-.6l.5-.6c.1-.2.2-.3.3-.5s0-.4 0-.5-.7-1.7-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.1.2-1.3s-.2-.3-.5-.5Z"/></svg>
+                Recordatorio WhatsApp
+            </a>
             <button type="submit" form="settle-order-{{ $order->id }}" class="min-h-12 w-full rounded-lg border border-stone-300 px-3 text-sm font-bold text-stone-800">Liquidar deuda</button>
         </div>
         <form method="POST" action="{{ route('debts.payments.store', $order) }}" class="mt-3 rounded-lg bg-stone-50 p-3" @submit="if (!Number(amount) || Number(amount) <= 0) { error = 'Por favor ingresa el monto a abonar'; $event.preventDefault() }">
