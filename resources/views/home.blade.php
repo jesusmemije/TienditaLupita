@@ -28,7 +28,7 @@
 
     <main>
         <section id="inicio" class="relative flex min-h-[650px] items-end overflow-hidden bg-stone-800 md:min-h-[720px]">
-            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2200&q=85" alt="Amigas disfrutando un día de compras" class="absolute inset-0 size-full object-cover object-center" fetchpriority="high">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=75" srcset="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=768&q=75 768w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1280&q=75 1280w, https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=75 1920w" sizes="100vw" alt="Amigas disfrutando un día de compras" class="absolute inset-0 size-full object-cover object-center" fetchpriority="high" decoding="async">
             <div class="absolute inset-0 bg-gradient-to-r from-stone-950/80 via-stone-900/40 to-stone-900/10"></div>
             <div class="relative mx-auto w-full max-w-7xl px-5 pb-16 pt-36 text-white sm:px-8 sm:pb-20 md:pb-24">
                 <p class="text-xs font-bold uppercase tracking-[0.18em] text-rose-200">Moda elegida con cariño</p>
@@ -45,17 +45,17 @@
             </div>
             <div class="grid gap-4 md:grid-cols-3">
                 <article class="group relative min-h-80 overflow-hidden bg-stone-900 text-white">
-                    <img src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=900&q=80" alt="Prendas seleccionadas para un pedido por encargo" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=800&q=70" srcset="https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=480&q=70 480w, https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=800&q=70 800w, https://images.unsplash.com/photo-1551232864-3f0890e580d9?auto=format&fit=crop&w=1200&q=70 1200w" sizes="(min-width: 768px) 33vw, 100vw" alt="Prendas seleccionadas para un pedido por encargo" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">Por encargo</p><h3 class="mt-2 text-2xl font-extrabold">SHEIN</h3><p class="mt-2 max-w-xs text-sm text-white/80">Arma tu pedido y te avisamos en cuanto llegue.</p></div>
                 </article>
                 <article class="group relative min-h-80 overflow-hidden bg-stone-700 text-white">
-                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80" alt="Prendas de uso diario en una tienda de ropa" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=70" srcset="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=480&q=70 480w, https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=70 800w, https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=70 1200w" sizes="(min-width: 768px) 33vw, 100vw" alt="Prendas de uso diario en una tienda de ropa" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">En persona</p><h3 class="mt-2 text-2xl font-extrabold">Tienda física</h3><p class="mt-2 max-w-xs text-sm text-white/80">Date una vuelta y descubre lo que tenemos disponible.</p></div>
                 </article>
                 <article class="group relative min-h-80 overflow-hidden bg-stone-700 text-white">
-                    <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=900&q=80" alt="Prenda casual en exhibición" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105">
+                    <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=70" srcset="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=480&q=70 480w, https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=70 800w, https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=1200&q=70 1200w" sizes="(min-width: 768px) 33vw, 100vw" alt="Prenda casual en exhibición" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
                     <div class="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/10 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6"><p class="text-xs font-bold uppercase tracking-widest text-rose-200">Recién llegado</p><h3 class="mt-2 text-2xl font-extrabold">Novedades</h3><p class="mt-2 max-w-xs text-sm text-white/80">Pequeños hallazgos y favoritos para renovar tu estilo.</p></div>
                 </article>
