@@ -36,7 +36,7 @@
             </a>
             <button type="submit" form="settle-order-{{ $order->id }}" class="min-h-12 w-full rounded-lg border border-stone-300 px-3 text-sm font-bold text-stone-800">Liquidar deuda</button>
         </div>
-        <form method="POST" action="{{ route('debts.payments.store', $order) }}" class="mt-3 rounded-lg bg-stone-50 p-3" @submit="if (!Number(amount) || Number(amount) <= 0) { error = 'Por favor ingresa el monto a abonar'; $event.preventDefault() }">
+        <form method="POST" action="{{ route('debts.payments.store', $order) }}" target="_blank" class="mt-3 rounded-lg bg-stone-50 p-3" @submit="if (!Number(amount) || Number(amount) <= 0) { error = 'Por favor ingresa el monto a abonar'; $event.preventDefault() }">
             @csrf
             <label for="payment-{{ $order->id }}" class="mb-1.5 block text-sm font-bold">Registrar abono</label>
             <div class="flex gap-2">

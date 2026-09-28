@@ -49,7 +49,7 @@
                         <label for="paid-{{ $order->id }}" class="mb-2 block text-sm font-bold">Abono parcial</label>
                         <div class="relative"><span class="absolute left-3 top-3 text-stone-400">$</span><input id="paid-{{ $order->id }}" name="paid_amount" x-model.number="partialAmount" type="number" min="0.01" max="{{ $order->total_amount }}" step="0.01" placeholder="Cantidad que pagó" class="min-h-12 w-full rounded-xl border border-stone-300 pl-8 pr-3 text-base focus:border-[var(--brand)] focus:outline-none" :required="partial"></div>
                         <p class="mt-2 text-xs text-stone-500">Saldo pendiente: $<span x-text="Math.max(0, {{ (float) $order->total_amount }} - (Number(partialAmount) || 0)).toFixed(2)"></span></p>
-                        <button type="submit" name="payment_type" value="partial" @click="partial = true" class="mt-3 min-h-12 w-full rounded-xl bg-[var(--brand)] px-4 font-bold text-white">Registrar abono y entregar</button>
+                        <button type="submit" name="payment_type" value="partial" formtarget="_blank" @click="partial = true" class="mt-3 min-h-12 w-full rounded-xl bg-[var(--brand)] px-4 font-bold text-white">Registrar abono y entregar</button>
                     </div>
                     <button type="button" @click="open = false" class="min-h-11 w-full text-sm font-semibold text-stone-500">Cancelar</button>
                 </form>

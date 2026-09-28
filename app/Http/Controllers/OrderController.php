@@ -82,7 +82,9 @@ class OrderController extends Controller
 
         if ($validated['payment_type'] === 'partial') {
             $order->refresh()->load(['client', 'items']);
-            $redirect->with('whatsapp_url', $this->paymentWhatsAppUrl($order, (float) $validated['paid_amount']));
+            $redirect = redirect()->route('orders.index', ['whatsapp' => 1])
+                ->with('success', 'Entrega registrada.')
+                ->with('whatsapp_url', $this->paymentWhatsAppUrl($order, (float) $validated['paid_amount']));
         }
 
         return $redirect;
@@ -152,7 +154,7 @@ class OrderController extends Controller
 
         $order->refresh()->load(['client', 'items']);
 
-        return redirect()->route('debts.index')
+        return redirect()->route('debts.index', ['whatsapp' => 1])
             ->with('success', 'Abono registrado.')
             ->with('whatsapp_url', $this->paymentWhatsAppUrl($order, $paymentAmount));
     }

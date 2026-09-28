@@ -53,7 +53,7 @@ class ExampleTest extends TestCase
         $this->post(route('orders.deliver', $order), [
             'payment_type' => 'partial',
             'paid_amount' => '600.00',
-        ])->assertRedirect(route('orders.index'));
+        ])->assertRedirect(route('orders.index', ['whatsapp' => 1]));
 
         $order->refresh();
         $this->assertSame('delivered_partial', $order->status);
@@ -67,7 +67,7 @@ class ExampleTest extends TestCase
 
         $this->from(route('debts.index'))->post(route('debts.payments.store', $order), [
             'paid_amount' => '100.00',
-        ])->assertRedirect(route('debts.index'))
+        ])->assertRedirect(route('debts.index', ['whatsapp' => 1]))
             ->assertSessionHas('whatsapp_url', function (string $url): bool {
                 $message = rawurldecode((string) parse_url($url, PHP_URL_QUERY));
 

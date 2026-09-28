@@ -32,8 +32,27 @@
         @if (session('success'))
             <div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800" role="status">{{ session('success') }}</div>
         @endif
-        @if (session('whatsapp_url'))
-            <a href="{{ session('whatsapp_url') }}" target="_blank" rel="noopener" class="mt-3 flex min-h-12 items-center justify-center rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white">Enviar resumen actualizado por WhatsApp</a>
+        @if (session('whatsapp_url') && request()->boolean('whatsapp'))
+            <div class="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">
+                <p class="font-semibold">Abriendo WhatsApp con el resumen actualizado.</p>
+                <a href="{{ session('whatsapp_url') }}" target="_blank" rel="noopener" class="mt-1 inline-block font-bold underline">Si no se abre, entra al resumen aquí</a>
+            </div>
+            <script>
+                const paymentNotification = {
+                    type: 'tiendita:payment-recorded',
+                    source: window.tienditaPaymentTabId,
+                };
+
+                if ('BroadcastChannel' in window) {
+                    const paymentChannel = new BroadcastChannel('tiendita-payments');
+                    paymentChannel.postMessage(paymentNotification);
+                    paymentChannel.close();
+                } else if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage(paymentNotification, window.location.origin);
+                }
+
+                window.location.replace(@json(session('whatsapp_url')));
+            </script>
         @endif
         @if ($errors->any())
             <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800" role="alert">
@@ -46,6 +65,25 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        window.tienditaPaymentTabId = `${Date.now()}-${Math.random()}`;
+
+        if ('BroadcastChannel' in window) {
+            const paymentChannel = new BroadcastChannel('tiendita-payments');
+            paymentChannel.addEventListener('message', (event) => {
+                if (event.data?.type === 'tiendita:payment-recorded' && event.data.source !== window.tienditaPaymentTabId) {
+                    window.location.reload();
+                }
+            });
+        }
+
+        window.addEventListener('message', (event) => {
+            if (event.origin === window.location.origin && event.data?.type === 'tiendita:payment-recorded') {
+                window.location.reload();
+            }
+        });
+    </script>
 
     <nav class="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 px-2 pt-2 shadow-[0_-8px_24px_rgba(36,33,31,0.07)] backdrop-blur" aria-label="Navegación principal">
         <div class="mx-auto grid max-w-xl grid-cols-5 items-end gap-1 pb-1">
