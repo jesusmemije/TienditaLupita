@@ -1,5 +1,12 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
+import $ from 'jquery';
+import select2 from 'select2';
+
+import 'select2/dist/css/select2.css';
+
+window.$ = window.jQuery = $;
+select2(window, $);
 
 window.Alpine = Alpine;
 
@@ -35,6 +42,42 @@ window.orderForm = (clients) => ({
 	savingClient: false,
 	clientError: '',
 	newClient: { name: '', internal_name: '', phone: '' },
+	initClientSelect(element) {
+		const select = $(element);
+
+		select.select2({
+			width: '100%',
+			placeholder: 'Elige un cliente',
+			minimumResultsForSearch: 0,
+			matcher: (params, option) => {
+				const query = this.normalizeClientSearch(params.term || '');
+
+				if (query === '') {
+					return option;
+				}
+
+				const searchableName = option.element?.dataset.search || option.text;
+
+				return this.normalizeClientSearch(searchableName).includes(query) ? option : null;
+			},
+		});
+
+		select.on('change', () => {
+			this.selectedClient = select.val() || '';
+		});
+
+		this.$watch('selectedClient', (value) => {
+			if (String(select.val() || '') !== String(value || '')) {
+				select.val(value || '').trigger('change');
+			}
+		});
+	},
+	normalizeClientSearch(value) {
+		return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+	},
+	clientLabel(client) {
+		return client.internal_name ? `${client.name} · ${client.internal_name}` : client.name;
+	},
 	get total() {
 		return this.items.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
 	},
@@ -66,7 +109,10 @@ window.orderForm = (clients) => ({
 			}
 
 			this.clients.push(data);
-			this.selectedClient = String(data.id);
+			const clientId = String(data.id);
+			await this.$nextTick();
+			this.selectedClient = clientId;
+			$(this.$refs.clientSelect).val(clientId).trigger('change');
 			this.newClient = { name: '', internal_name: '', phone: '' };
 			this.showClientModal = false;
 		} catch {

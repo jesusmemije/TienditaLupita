@@ -3,7 +3,7 @@
 @section('title', 'Nuevo pedido')
 
 @section('content')
-<section x-data="orderForm(@js($clients->map(fn ($client) => ['id' => $client->id, 'name' => $client->name, 'internal_name' => $client->internal_name])->values()))">
+<section x-data="orderForm(@js($clients->map(fn ($client) => ['id' => $client->id, 'name' => $client->name, 'internal_name' => $client->internal_name])->values()))" x-init="$nextTick(() => initClientSelect($refs.clientSelect))">
     <div class="mb-5">
         <p class="text-xs font-bold uppercase tracking-[0.12em] text-[var(--brand)]">Nuevo encargo</p>
         <h1 class="mt-1 text-2xl font-extrabold">Crear pedido</h1>
@@ -17,9 +17,9 @@
                 <label for="client_id" class="text-sm font-bold">Cliente</label>
                 <button type="button" @click="showClientModal = true; clientError = ''" class="min-h-10 rounded-xl bg-rose-50 px-3 text-sm font-bold text-[var(--brand-dark)]">+ Nuevo cliente</button>
             </div>
-            <select id="client_id" name="client_id" x-model="selectedClient" required class="min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-rose-100">
+            <select id="client_id" name="client_id" x-ref="clientSelect" required class="min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-rose-100">
                 <option value="">Elige un cliente</option>
-                <template x-for="client in clients" :key="client.id"><option :value="client.id" x-text="client.internal_name ? client.name + ' · ' + client.internal_name : client.name"></option></template>
+                <template x-for="client in clients" :key="client.id"><option :value="client.id" :data-search="`${client.name} ${client.internal_name || ''}`" x-text="clientLabel(client)"></option></template>
             </select>
             @error('client_id')<p class="mt-1 text-sm text-rose-700">{{ $message }}</p>@enderror
         </section>
