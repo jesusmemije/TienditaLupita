@@ -20,7 +20,7 @@
         $message = "¡Hola {$order->client->name}! Tu pedido de SHEIN ya llegó 📦.\n\nDetalle de tus productos:\n{$details}\n\n*Total a pagar contra entrega: $".number_format((float) $order->total_amount, 2)."*\n(Nota: Los precios de los productos ya cuentan con la comisión por prenda incluida) ✨\n\nPuedes pasar por él a mi domicilio. ¡Avísame cuando vengas!\n\n— Enviado desde Tiendita Lupita 🛍️";
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
-    <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: 0 }">
+    <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: '' }">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0"><p class="truncate text-lg font-extrabold">{{ $order->client->name }}</p>@if ($order->client->internal_name)<p class="truncate text-xs font-semibold text-[var(--brand-dark)]">{{ $order->client->internal_name }}</p>@endif<p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ $order->items->count() }} {{ $order->items->count() === 1 ? 'producto' : 'productos' }}</p></div>
             <span class="shrink-0 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Por entregar</span>
@@ -44,7 +44,7 @@
                 <div class="mb-4"><p class="text-xs font-bold uppercase tracking-wide text-[var(--brand)]">Pedido #{{ $order->id }}</p><h2 class="mt-1 text-xl font-extrabold">Registrar entrega</h2><p class="mt-1 text-sm text-stone-500">Se entrega el paquete completo, aunque quede saldo.</p></div>
                 <form method="POST" action="{{ route('orders.deliver', $order) }}" class="space-y-3">
                     @csrf
-                    <button type="submit" name="payment_type" value="full" @click="partial = false" class="min-h-14 w-full rounded-xl bg-emerald-700 px-4 text-base font-extrabold text-white">Pagó completo · ${{ number_format((float) $order->total_amount, 2) }}</button>
+                    <button type="submit" name="payment_type" value="full" formnovalidate @click="partial = false" class="min-h-14 w-full rounded-xl bg-emerald-700 px-4 text-base font-extrabold text-white">Pagó completo · ${{ number_format((float) $order->total_amount, 2) }}</button>
                     <div class="rounded-xl border border-stone-200 p-3">
                         <label for="paid-{{ $order->id }}" class="mb-2 block text-sm font-bold">Abono parcial</label>
                         <div class="relative"><span class="absolute left-3 top-3 text-stone-400">$</span><input id="paid-{{ $order->id }}" name="paid_amount" x-model.number="partialAmount" type="number" min="0.01" max="{{ $order->total_amount }}" step="0.01" placeholder="Cantidad que pagó" class="min-h-12 w-full rounded-xl border border-stone-300 pl-8 pr-3 text-base focus:border-[var(--brand)] focus:outline-none" :required="partial"></div>

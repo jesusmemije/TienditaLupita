@@ -55,7 +55,7 @@ class OrderController extends Controller
     {
         $validated = $request->validate([
             'payment_type' => ['required', 'in:full,partial'],
-            'paid_amount' => ['required_if:payment_type,partial', 'nullable', 'numeric', 'decimal:0,2', 'gt:0', 'lte:'.$order->total_amount],
+            'paid_amount' => ['exclude_unless:payment_type,partial', 'required', 'numeric', 'decimal:0,2', 'gt:0', 'lte:'.$order->total_amount],
         ]);
 
         DB::transaction(function () use ($order, $validated): void {

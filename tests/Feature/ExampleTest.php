@@ -86,6 +86,30 @@ class ExampleTest extends TestCase
         $this->assertSame('delivered_paid', $order->fresh()->status);
     }
 
+    public function test_full_delivery_ignores_the_partial_payment_amount(): void
+    {
+        $client = Client::create([
+            'name' => 'Ana Lopez',
+            'phone' => '5215512345678',
+        ]);
+
+        $this->post(route('orders.store'), [
+            'client_id' => $client->id,
+            'items' => [['product_name' => 'Blusa', 'price' => '600.00']],
+        ])->assertRedirect(route('orders.index'));
+
+        $order = Order::firstOrFail();
+
+        $this->post(route('orders.deliver', $order), [
+            'payment_type' => 'full',
+            'paid_amount' => '0',
+        ])->assertRedirect(route('orders.index'));
+
+        $this->assertSame('600.00', $order->fresh()->paid_amount);
+        $this->assertSame('0.00', $order->fresh()->due_amount);
+        $this->assertSame('delivered_paid', $order->fresh()->status);
+    }
+
     public function test_main_mobile_pages_render(): void
     {
         $this->get(route('orders.create'))->assertOk()->assertSee('Crear pedido');
