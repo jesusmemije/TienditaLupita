@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::post('/orders/{order}/deliver', [OrderController::class, 'deliver'])->name('orders.deliver');
     Route::get('/debts', [OrderController::class, 'debts'])->name('debts.index');
     Route::post('/debts/{order}/settle', [OrderController::class, 'settle'])->name('debts.settle');

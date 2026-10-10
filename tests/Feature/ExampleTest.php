@@ -110,6 +110,46 @@ class ExampleTest extends TestCase
         $this->assertSame('delivered_paid', $order->fresh()->status);
     }
 
+    public function test_pending_order_can_be_deleted_with_its_items(): void
+    {
+        $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+        $order = Order::create([
+            'client_id' => $client->id,
+            'status' => 'pending_delivery',
+            'total_amount' => 600,
+            'paid_amount' => 0,
+            'due_amount' => 0,
+        ]);
+        $order->items()->create(['product_name' => 'Blusa', 'price' => 600]);
+
+        $this->delete(route('orders.destroy', $order))
+            ->assertRedirect(route('orders.index'))
+            ->assertSessionHas('success', 'Pedido eliminado. Puedes registrarlo nuevamente.');
+
+        $this->assertDatabaseMissing('orders', ['id' => $order->id]);
+        $this->assertDatabaseMissing('order_items', ['order_id' => $order->id]);
+    }
+
+    public function test_delivered_order_cannot_be_deleted(): void
+    {
+        $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+        $order = Order::create([
+            'client_id' => $client->id,
+            'status' => 'delivered_paid',
+            'total_amount' => 600,
+            'paid_amount' => 600,
+            'due_amount' => 0,
+            'delivered_at' => now(),
+        ]);
+
+        $this->from(route('orders.index'))
+            ->delete(route('orders.destroy', $order))
+            ->assertRedirect(route('orders.index'))
+            ->assertSessionHasErrors('order');
+
+        $this->assertDatabaseHas('orders', ['id' => $order->id]);
+    }
+
     public function test_main_mobile_pages_render(): void
     {
         $this->get(route('orders.create'))->assertOk()->assertSee('Crear pedido');

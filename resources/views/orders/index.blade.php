@@ -20,7 +20,7 @@
         $message = "¡Hola {$order->client->name}! Tu pedido de SHEIN ya llegó 📦.\n\nDetalle de tus productos:\n{$details}\n\n*Total a pagar contra entrega: $".number_format((float) $order->total_amount, 2)."*\n(Nota: Los precios de los productos ya cuentan con la comisión por prenda incluida) ✨\n\nPuedes pasar por él a mi domicilio. ¡Avísame cuando vengas!\n\n— Enviado desde Tiendita Lupita 🛍️";
         $phone = preg_replace('/\D+/', '', $order->client->phone);
     @endphp
-    <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, partial: false, partialAmount: '' }">
+    <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm" x-data="{ open: false, deleteOpen: false, partial: false, partialAmount: '' }">
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0"><p class="truncate text-lg font-extrabold">{{ $order->client->name }}</p>@if ($order->client->internal_name)<p class="truncate text-xs font-semibold text-[var(--brand-dark)]">{{ $order->client->internal_name }}</p>@endif<p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ $order->items->count() }} {{ $order->items->count() === 1 ? 'producto' : 'productos' }}</p></div>
             <span class="shrink-0 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Por entregar</span>
@@ -37,6 +37,27 @@
                 Notificar por WhatsApp
             </a>
             <button type="button" @click="open = true" class="min-h-12 rounded-xl border border-stone-300 px-3 text-sm font-bold text-stone-800 active:bg-stone-50">Registrar entrega</button>
+        </div>
+
+        <button type="button" @click="deleteOpen = true" class="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-rose-200 px-3 text-sm font-bold text-rose-700 transition hover:bg-rose-50">
+                <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16m-10 4v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg>
+                Eliminar pedido
+        </button>
+
+        <div x-cloak x-show="deleteOpen" x-transition.opacity class="fixed inset-0 z-50 flex items-end justify-center bg-stone-950/60 p-3 sm:items-center" @keydown.escape.window="deleteOpen = false">
+            <div role="dialog" aria-modal="true" aria-labelledby="delete-order-title-{{ $order->id }}" @click.outside="deleteOpen = false" class="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl">
+                <span class="grid size-11 place-items-center rounded-full bg-rose-50 text-rose-700">
+                    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9 1.8 18.6A1.6 1.6 0 0 0 3.2 21h17.6a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+                </span>
+                <h2 id="delete-order-title-{{ $order->id }}" class="mt-4 text-lg font-extrabold">¿Eliminar este pedido?</h2>
+                <p class="mt-2 text-sm leading-relaxed text-stone-600">Se eliminará el pedido de {{ $order->client->name }} y todos sus productos. Esta acción no se puede deshacer.</p>
+                <form method="POST" action="{{ route('orders.destroy', $order) }}" class="mt-5 grid grid-cols-2 gap-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" @click="deleteOpen = false" class="min-h-11 rounded-xl border border-stone-300 px-3 text-sm font-bold text-stone-700">Cancelar</button>
+                    <button type="submit" class="min-h-11 rounded-xl bg-rose-700 px-3 text-sm font-bold text-white">Sí, eliminar</button>
+                </form>
+            </div>
         </div>
 
         <div x-cloak x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-end justify-center bg-stone-950/50 p-3 sm:items-center" @keydown.escape.window="open = false">

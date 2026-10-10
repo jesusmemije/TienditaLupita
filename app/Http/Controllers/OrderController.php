@@ -51,6 +51,21 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Pedido creado.');
     }
 
+    public function destroy(Order $order): RedirectResponse
+    {
+        DB::transaction(function () use ($order): void {
+            $lockedOrder = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedOrder->status !== 'pending_delivery') {
+                throw ValidationException::withMessages(['order' => 'Solo se pueden eliminar pedidos pendientes de entrega.']);
+            }
+
+            $lockedOrder->delete();
+        });
+
+        return redirect()->route('orders.index')->with('success', 'Pedido eliminado. Puedes registrarlo nuevamente.');
+    }
+
     public function deliver(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
