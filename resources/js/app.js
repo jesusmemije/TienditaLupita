@@ -123,4 +123,36 @@ window.orderForm = (clients) => ({
 	},
 });
 
+const themeToggle = document.getElementById('theme-toggle');
+
+if (themeToggle) {
+	const themeLabel = themeToggle.querySelector('[data-theme-label]');
+	const darkIcon = themeToggle.querySelector('[data-theme-icon="dark"]');
+	const lightIcon = themeToggle.querySelector('[data-theme-icon="light"]');
+
+	const updateThemeControl = () => {
+		const isDark = document.documentElement.dataset.theme === 'dark';
+		const nextTheme = isDark ? 'light' : 'dark';
+		themeLabel.textContent = isDark ? 'Claro' : 'Oscuro';
+		themeToggle.setAttribute('aria-label', `Cambiar a modo ${nextTheme === 'dark' ? 'oscuro' : 'claro'}`);
+		themeToggle.title = `Cambiar a modo ${nextTheme === 'dark' ? 'oscuro' : 'claro'}`;
+		darkIcon.classList.toggle('hidden', isDark);
+		lightIcon.classList.toggle('hidden', !isDark);
+	};
+
+	updateThemeControl();
+	themeToggle.addEventListener('click', () => {
+		const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+		document.documentElement.dataset.theme = nextTheme;
+
+		try {
+			localStorage.setItem('tiendita-theme', nextTheme);
+		} catch {
+			// The selected theme remains active for the current page.
+		}
+
+		updateThemeControl();
+	});
+}
+
 Alpine.start();
