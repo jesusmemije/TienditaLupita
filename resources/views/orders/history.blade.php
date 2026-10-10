@@ -15,6 +15,20 @@
     <article data-live-search-item data-search="{{ $order->client->name }} {{ $order->client->internal_name }}" x-show="matches($el.dataset.search)" class="mb-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
         <div class="flex items-start justify-between gap-3"><div><h2 class="text-lg font-extrabold">{{ $order->client->name }}</h2>@if ($order->client->internal_name)<p class="text-xs font-semibold text-[var(--brand-dark)]">{{ $order->client->internal_name }}</p>@endif<p class="mt-0.5 text-sm text-stone-500">Pedido #{{ $order->id }} · {{ optional($order->delivered_at)->format('d/m/Y') }}</p></div><span @class(['rounded-full px-3 py-1 text-xs font-bold', 'bg-emerald-50 text-emerald-800' => $order->status === 'delivered_paid', 'bg-amber-50 text-amber-800' => $order->status === 'delivered_partial'])>{{ $order->status === 'delivered_paid' ? 'Pagado' : 'Abono parcial' }}</span></div>
         <div class="mt-4 grid grid-cols-3 gap-2 border-t border-stone-100 pt-3 text-sm"><div><p class="text-xs text-stone-500">Total</p><p class="mt-1 font-bold">${{ number_format((float) $order->total_amount, 2) }}</p></div><div><p class="text-xs text-stone-500">Pagado</p><p class="mt-1 font-bold">${{ number_format((float) $order->paid_amount, 2) }}</p></div><div><p class="text-xs text-stone-500">Pendiente</p><p class="mt-1 font-bold">${{ number_format((float) $order->due_amount, 2) }}</p></div></div>
+        <details class="mt-3 border-t border-stone-100 pt-3">
+            <summary class="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-stone-700">
+                <span>Ver productos ({{ $order->items->count() }})</span>
+                <svg viewBox="0 0 24 24" class="size-4 shrink-0 transition-transform open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <ul class="mt-2 space-y-2">
+                @foreach ($order->items as $item)
+                    <li class="flex items-start justify-between gap-3 text-sm">
+                        <span class="min-w-0 break-words text-stone-600">{{ $item->product_name }}</span>
+                        <span class="shrink-0 font-semibold tabular-nums">${{ number_format((float) $item->price, 2) }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </details>
     </article>
 @empty
     <section x-cloak x-show="!query.trim()" class="rounded-2xl border border-dashed border-stone-300 bg-white px-5 py-12 text-center"><h2 class="text-lg font-bold">Todavía no hay entregas</h2><p class="mt-1 text-sm text-stone-500">Al registrar una entrega, aparecerá aquí.</p></section>

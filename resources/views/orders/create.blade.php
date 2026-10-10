@@ -25,7 +25,7 @@
         </section>
 
         <section class="space-y-3">
-            <div class="flex items-center justify-between">
+            <div class="sticky top-[4.5rem] z-10 -mx-4 flex items-center justify-between border-b border-stone-200 bg-[var(--canvas)]/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
                 <h2 class="text-base font-bold">Productos</h2>
                 <button type="button" @click="addItem()" class="inline-flex min-h-10 items-center gap-1 rounded-xl px-3 text-sm font-bold text-[var(--brand-dark)] hover:bg-rose-50">
                     <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg> Agregar
