@@ -19,7 +19,50 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
-        return view('orders.index', compact('orders'));
+        $deliveredOrders = Order::whereIn('status', ['delivered_paid', 'delivered_partial']);
+        $monthlyTotals = (clone $deliveredOrders)
+            ->whereBetween('delivered_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->selectRaw('COALESCE(SUM(total_amount), 0) AS sales_total, COALESCE(SUM(paid_amount), 0) AS collected_total')
+            ->first();
+        $accountTotals = (clone $deliveredOrders)
+            ->selectRaw('COALESCE(SUM(paid_amount), 0) AS collected_total, COALESCE(SUM(due_amount), 0) AS due_total')
+            ->first();
+
+        $today = now()->startOfDay();
+        $periodStart = $today->copy()->subDays(6);
+        $periodEnd = $today->copy()->endOfDay();
+        $periodDays = collect(range(0, 6))
+            ->map(fn (int $offset) => $periodStart->copy()->addDays($offset));
+        $dailyTotals = (clone $deliveredOrders)
+            ->whereBetween('delivered_at', [$periodStart, $periodEnd])
+            ->selectRaw('DATE(delivered_at) AS sales_day, SUM(total_amount) AS sales_total, SUM(paid_amount) AS collected_total')
+            ->groupByRaw('DATE(delivered_at)')
+            ->get()
+            ->keyBy('sales_day');
+
+        $salesChartData = [
+            'labels' => $periodDays->map(fn ($day) => $day->format('d/m'))->values()->all(),
+            'sales' => $periodDays->map(fn ($day) => (float) ($dailyTotals->get($day->toDateString())?->sales_total ?? 0))->values()->all(),
+            'collected' => $periodDays->map(fn ($day) => (float) ($dailyTotals->get($day->toDateString())?->collected_total ?? 0))->values()->all(),
+        ];
+        $paymentsChartData = [
+            'collected' => (float) $accountTotals->collected_total,
+            'due' => (float) $accountTotals->due_total,
+        ];
+        $salesThisMonth = (float) $monthlyTotals->sales_total;
+        $collectedThisMonth = (float) $monthlyTotals->collected_total;
+        $currentDue = (float) $accountTotals->due_total;
+        $pendingOrderCount = Order::where('status', 'pending_delivery')->count();
+
+        return view('orders.index', compact(
+            'orders',
+            'salesThisMonth',
+            'collectedThisMonth',
+            'currentDue',
+            'pendingOrderCount',
+            'salesChartData',
+            'paymentsChartData',
+        ));
     }
 
     public function create(): View

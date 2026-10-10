@@ -9,6 +9,55 @@
     <a href="{{ route('orders.create') }}" class="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand)] text-2xl font-light text-white shadow-md" aria-label="Crear pedido">+</a>
 </div>
 
+<section aria-label="Resumen de ventas" class="mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-semibold text-stone-500">Ventas entregadas · este mes</p>
+        <p class="mt-2 truncate text-xl font-extrabold tabular-nums sm:text-2xl">${{ number_format($salesThisMonth, 2) }}</p>
+    </article>
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-semibold text-stone-500">Cobrado · este mes</p>
+        <p class="mt-2 truncate text-xl font-extrabold tabular-nums text-emerald-700 sm:text-2xl">${{ number_format($collectedThisMonth, 2) }}</p>
+    </article>
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-semibold text-stone-500">Saldo por cobrar</p>
+        <p class="mt-2 truncate text-xl font-extrabold tabular-nums text-[var(--brand-dark)] sm:text-2xl">${{ number_format($currentDue, 2) }}</p>
+    </article>
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-semibold text-stone-500">Pedidos por entregar</p>
+        <p class="mt-2 text-xl font-extrabold tabular-nums sm:text-2xl">{{ $pendingOrderCount }}</p>
+    </article>
+</section>
+
+<section aria-label="Gráficas de ventas" class="mb-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
+        <div class="mb-3">
+            <h2 class="text-base font-extrabold">Ventas y cobros</h2>
+            <p class="mt-1 text-xs text-stone-500">Últimos 7 días · por fecha de entrega</p>
+        </div>
+        @if (array_sum($salesChartData['sales']) + array_sum($salesChartData['collected']) > 0)
+            <div class="relative h-64 sm:h-72">
+                <canvas data-dashboard-chart="sales" data-chart-data='@json($salesChartData)' role="img" aria-label="Gráfica de ventas entregadas y cobros de los últimos siete días"></canvas>
+            </div>
+        @else
+            <div class="grid h-64 place-items-center text-center text-sm text-stone-500">Aún no hay ventas entregadas en los últimos siete días.</div>
+        @endif
+    </article>
+
+    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
+        <div class="mb-3">
+            <h2 class="text-base font-extrabold">Cobrado y por cobrar</h2>
+            <p class="mt-1 text-xs text-stone-500">Acumulado de pedidos entregados</p>
+        </div>
+        @if ($paymentsChartData['collected'] + $paymentsChartData['due'] > 0)
+            <div class="relative h-64 sm:h-72">
+                <canvas data-dashboard-chart="payments" data-chart-data='@json($paymentsChartData)' role="img" aria-label="Gráfica de montos cobrados y pendientes de cobro"></canvas>
+            </div>
+        @else
+            <div class="grid h-64 place-items-center text-center text-sm text-stone-500">Aún no hay ventas entregadas para mostrar.</div>
+        @endif
+    </article>
+</section>
+
     <div class="mb-4">
         <label for="search-orders" class="sr-only">Buscar pedido por cliente</label>
         <input id="search-orders" x-model.debounce.150ms="query" type="search" placeholder="Buscar por cliente o identificador" class="min-h-12 w-full rounded-xl border border-stone-300 bg-white px-4 text-base outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-rose-100">

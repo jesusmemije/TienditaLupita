@@ -150,6 +150,44 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('orders', ['id' => $order->id]);
     }
 
+    public function test_admin_dashboard_summarizes_delivered_sales_and_pending_orders_separately(): void
+    {
+        $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+
+        Order::create([
+            'client_id' => $client->id,
+            'status' => 'delivered_paid',
+            'total_amount' => 100,
+            'paid_amount' => 100,
+            'due_amount' => 0,
+            'delivered_at' => now(),
+        ]);
+        Order::create([
+            'client_id' => $client->id,
+            'status' => 'delivered_partial',
+            'total_amount' => 200,
+            'paid_amount' => 50,
+            'due_amount' => 150,
+            'delivered_at' => now()->subDays(2),
+        ]);
+        Order::create([
+            'client_id' => $client->id,
+            'status' => 'pending_delivery',
+            'total_amount' => 300,
+            'paid_amount' => 0,
+            'due_amount' => 0,
+        ]);
+
+        $this->get(route('orders.index'))
+            ->assertOk()
+            ->assertViewHas('salesThisMonth', 300.0)
+            ->assertViewHas('collectedThisMonth', 150.0)
+            ->assertViewHas('currentDue', 150.0)
+            ->assertViewHas('pendingOrderCount', 1)
+            ->assertViewHas('salesChartData', fn (array $data): bool => array_sum($data['sales']) === 300.0
+                && array_sum($data['collected']) === 150.0);
+    }
+
     public function test_main_mobile_pages_render(): void
     {
         $this->get(route('orders.create'))->assertOk()->assertSee('Crear pedido');
