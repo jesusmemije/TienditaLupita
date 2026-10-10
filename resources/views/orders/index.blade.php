@@ -28,34 +28,46 @@
     </article>
 </section>
 
-<section aria-label="Gráficas de ventas" class="mb-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
-        <div class="mb-3">
-            <h2 class="text-base font-extrabold">Ventas y cobros</h2>
-            <p class="mt-1 text-xs text-stone-500">Últimos 7 días · por fecha de entrega</p>
+@php
+    $topClientMaxSales = (float) ($topClients->first()->delivered_sales ?? 0);
+@endphp
+<section aria-label="Clientas que más compran" class="mb-6 rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
+    <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
+            <span>
+                <span class="block text-base font-extrabold">Clientas que más compran</span>
+                <span class="mt-1 block text-xs text-stone-500">Top 10 · pedidos entregados</span>
+            </span>
+            <svg viewBox="0 0 24 24" class="size-5 shrink-0 text-stone-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="mt-3 border-t border-stone-100 pt-1">
+            <p class="py-2 text-xs text-stone-500">Ordenadas por valor total de compra, incluidos los abonos parciales.</p>
+            @if ($topClients->isNotEmpty())
+                <ol class="divide-y divide-stone-100">
+                    @foreach ($topClients as $client)
+                        <li class="flex items-center gap-3 py-3">
+                            <span @class(['grid size-9 shrink-0 place-items-center rounded-lg text-xs font-extrabold', 'bg-[var(--brand)] text-white' => $loop->first, 'bg-stone-100 text-stone-500' => !$loop->first])>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                                    <p class="truncate text-sm font-bold">{{ $client->name }}</p>
+                                    <p class="shrink-0 text-xs text-stone-500">{{ $client->delivered_order_count }} {{ $client->delivered_order_count === 1 ? 'pedido' : 'pedidos' }}</p>
+                                </div>
+                                @if ($client->internal_name)
+                                    <p class="truncate text-xs text-stone-500">{{ $client->internal_name }}</p>
+                                @endif
+                                <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-stone-100" role="presentation">
+                                    <span class="block h-full rounded-full bg-[var(--brand)]" style="width: {{ $topClientMaxSales > 0 ? min(100, ((float) $client->delivered_sales / $topClientMaxSales) * 100) : 0 }}%"></span>
+                                </div>
+                            </div>
+                            <span class="shrink-0 text-sm font-extrabold tabular-nums">${{ number_format((float) $client->delivered_sales, 2) }}</span>
+                        </li>
+                    @endforeach
+                </ol>
+            @else
+                <p class="py-8 text-center text-sm text-stone-500">Cuando completes una entrega, tus mejores clientas aparecerán aquí.</p>
+            @endif
         </div>
-        @if (array_sum($salesChartData['sales']) + array_sum($salesChartData['collected']) > 0)
-            <div class="relative h-64 sm:h-72">
-                <canvas data-dashboard-chart="sales" data-chart-data='@json($salesChartData)' role="img" aria-label="Gráfica de ventas entregadas y cobros de los últimos siete días"></canvas>
-            </div>
-        @else
-            <div class="grid h-64 place-items-center text-center text-sm text-stone-500">Aún no hay ventas entregadas en los últimos siete días.</div>
-        @endif
-    </article>
-
-    <article class="min-w-0 rounded-lg border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
-        <div class="mb-3">
-            <h2 class="text-base font-extrabold">Cobrado y por cobrar</h2>
-            <p class="mt-1 text-xs text-stone-500">Acumulado de pedidos entregados</p>
-        </div>
-        @if ($paymentsChartData['collected'] + $paymentsChartData['due'] > 0)
-            <div class="relative h-64 sm:h-72">
-                <canvas data-dashboard-chart="payments" data-chart-data='@json($paymentsChartData)' role="img" aria-label="Gráfica de montos cobrados y pendientes de cobro"></canvas>
-            </div>
-        @else
-            <div class="grid h-64 place-items-center text-center text-sm text-stone-500">Aún no hay ventas entregadas para mostrar.</div>
-        @endif
-    </article>
+    </details>
 </section>
 
     <div class="mb-4">

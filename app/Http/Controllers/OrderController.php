@@ -19,7 +19,8 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
-        $deliveredOrders = Order::whereIn('status', ['delivered_paid', 'delivered_partial']);
+        $deliveredStatuses = ['delivered_paid', 'delivered_partial'];
+        $deliveredOrders = Order::whereIn('status', $deliveredStatuses);
         $monthlyTotals = (clone $deliveredOrders)
             ->whereBetween('delivered_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->selectRaw('COALESCE(SUM(total_amount), 0) AS sales_total, COALESCE(SUM(paid_amount), 0) AS collected_total')
@@ -28,27 +29,15 @@ class OrderController extends Controller
             ->selectRaw('COALESCE(SUM(paid_amount), 0) AS collected_total, COALESCE(SUM(due_amount), 0) AS due_total')
             ->first();
 
-        $today = now()->startOfDay();
-        $periodStart = $today->copy()->subDays(6);
-        $periodEnd = $today->copy()->endOfDay();
-        $periodDays = collect(range(0, 6))
-            ->map(fn (int $offset) => $periodStart->copy()->addDays($offset));
-        $dailyTotals = (clone $deliveredOrders)
-            ->whereBetween('delivered_at', [$periodStart, $periodEnd])
-            ->selectRaw('DATE(delivered_at) AS sales_day, SUM(total_amount) AS sales_total, SUM(paid_amount) AS collected_total')
-            ->groupByRaw('DATE(delivered_at)')
-            ->get()
-            ->keyBy('sales_day');
-
-        $salesChartData = [
-            'labels' => $periodDays->map(fn ($day) => $day->format('d/m'))->values()->all(),
-            'sales' => $periodDays->map(fn ($day) => (float) ($dailyTotals->get($day->toDateString())?->sales_total ?? 0))->values()->all(),
-            'collected' => $periodDays->map(fn ($day) => (float) ($dailyTotals->get($day->toDateString())?->collected_total ?? 0))->values()->all(),
-        ];
-        $paymentsChartData = [
-            'collected' => (float) $accountTotals->collected_total,
-            'due' => (float) $accountTotals->due_total,
-        ];
+        $topClients = Client::query()
+            ->select('clients.id', 'clients.name', 'clients.internal_name')
+            ->whereHas('orders', fn ($query) => $query->whereIn('status', $deliveredStatuses))
+            ->withSum(['orders as delivered_sales' => fn ($query) => $query->whereIn('status', $deliveredStatuses)], 'total_amount')
+            ->withCount(['orders as delivered_order_count' => fn ($query) => $query->whereIn('status', $deliveredStatuses)])
+            ->orderByDesc('delivered_sales')
+            ->orderBy('clients.name')
+            ->limit(10)
+            ->get();
         $salesThisMonth = (float) $monthlyTotals->sales_total;
         $collectedThisMonth = (float) $monthlyTotals->collected_total;
         $currentDue = (float) $accountTotals->due_total;
@@ -60,8 +49,7 @@ class OrderController extends Controller
             'collectedThisMonth',
             'currentDue',
             'pendingOrderCount',
-            'salesChartData',
-            'paymentsChartData',
+            'topClients',
         ));
     }
 

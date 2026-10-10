@@ -150,9 +150,10 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('orders', ['id' => $order->id]);
     }
 
-    public function test_admin_dashboard_summarizes_delivered_sales_and_pending_orders_separately(): void
+    public function test_admin_dashboard_summarizes_sales_and_ranks_top_clients_by_delivered_orders(): void
     {
         $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+        $secondClient = Client::create(['name' => 'Bea Torres', 'phone' => '5215512345679']);
 
         Order::create([
             'client_id' => $client->id,
@@ -171,6 +172,13 @@ class ExampleTest extends TestCase
             'delivered_at' => now()->subDays(2),
         ]);
         Order::create([
+            'client_id' => $secondClient->id,
+            'status' => 'pending_delivery',
+            'total_amount' => 250,
+            'paid_amount' => 0,
+            'due_amount' => 0,
+        ]);
+        Order::create([
             'client_id' => $client->id,
             'status' => 'pending_delivery',
             'total_amount' => 300,
@@ -184,8 +192,10 @@ class ExampleTest extends TestCase
             ->assertViewHas('collectedThisMonth', 150.0)
             ->assertViewHas('currentDue', 150.0)
             ->assertViewHas('pendingOrderCount', 1)
-            ->assertViewHas('salesChartData', fn (array $data): bool => array_sum($data['sales']) === 300.0
-                && array_sum($data['collected']) === 150.0);
+            ->assertViewHas('topClients', fn ($clients): bool => $clients->count() === 1
+                && $clients->first()->id === $client->id
+                && (float) $clients->first()->delivered_sales === 300.0
+                && $clients->first()->delivered_order_count === 2);
     }
 
     public function test_main_mobile_pages_render(): void
