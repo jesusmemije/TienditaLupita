@@ -62,8 +62,8 @@ class ExampleTest extends TestCase
         $this->get(route('debts.index'))
             ->assertOk()
             ->assertSee('$400.00')
-            ->assertSee('form="settle-order-'.$order->id.'"', false)
-            ->assertSee('id="settle-order-'.$order->id.'"', false);
+            ->assertSee('form="settle-order-' . $order->id . '"', false)
+            ->assertSee('id="settle-order-' . $order->id . '"', false);
 
         $this->from(route('debts.index'))->post(route('debts.payments.store', $order), [
             'paid_amount' => '100.00',
@@ -108,6 +108,27 @@ class ExampleTest extends TestCase
         $this->assertSame('600.00', $order->fresh()->paid_amount);
         $this->assertSame('0.00', $order->fresh()->due_amount);
         $this->assertSame('delivered_paid', $order->fresh()->status);
+    }
+
+    public function test_partial_delivery_can_be_recorded_with_zero_payment(): void
+    {
+        $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+        $order = Order::create([
+            'client_id' => $client->id,
+            'status' => 'pending_delivery',
+            'total_amount' => 600,
+            'paid_amount' => 0,
+            'due_amount' => 0,
+        ]);
+
+        $this->post(route('orders.deliver', $order), [
+            'payment_type' => 'partial',
+            'paid_amount' => '0',
+        ])->assertRedirect(route('orders.index', ['whatsapp' => 1]));
+
+        $this->assertSame('delivered_partial', $order->fresh()->status);
+        $this->assertSame('0.00', $order->fresh()->paid_amount);
+        $this->assertSame('600.00', $order->fresh()->due_amount);
     }
 
     public function test_pending_order_can_be_deleted_with_its_items(): void
@@ -192,9 +213,9 @@ class ExampleTest extends TestCase
             ->assertViewHas('collectedThisMonth', 150.0)
             ->assertViewHas('currentDue', 150.0)
             ->assertViewHas('pendingOrderCount', 1)
-            ->assertViewHas('topClients', fn ($clients): bool => $clients->count() === 1
+            ->assertViewHas('topClients', fn($clients): bool => $clients->count() === 1
                 && $clients->first()->id === $client->id
-                && (float) $clients->first()->delivered_sales === 300.0
+                && (float) $clients->first()->delivered_sales === 150.0
                 && $clients->first()->delivered_order_count === 2);
     }
 

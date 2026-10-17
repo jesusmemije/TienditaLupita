@@ -31,9 +31,9 @@ class OrderController extends Controller
 
         $topClients = Client::query()
             ->select('clients.id', 'clients.name', 'clients.internal_name')
-            ->whereHas('orders', fn ($query) => $query->whereIn('status', $deliveredStatuses))
-            ->withSum(['orders as delivered_sales' => fn ($query) => $query->whereIn('status', $deliveredStatuses)], 'total_amount')
-            ->withCount(['orders as delivered_order_count' => fn ($query) => $query->whereIn('status', $deliveredStatuses)])
+            ->whereHas('orders', fn($query) => $query->whereIn('status', $deliveredStatuses))
+            ->withSum(['orders as delivered_sales' => fn($query) => $query->whereIn('status', $deliveredStatuses)], 'paid_amount')
+            ->withCount(['orders as delivered_order_count' => fn($query) => $query->whereIn('status', $deliveredStatuses)])
             ->orderByDesc('delivered_sales')
             ->orderBy('clients.name')
             ->limit(10)
@@ -68,7 +68,7 @@ class OrderController extends Controller
         ]);
 
         DB::transaction(function () use ($validated): void {
-            $total = collect($validated['items'])->sum(fn ($item) => (float) $item['price']);
+            $total = collect($validated['items'])->sum(fn($item) => (float) $item['price']);
             $order = Order::create([
                 'client_id' => $validated['client_id'],
                 'status' => 'pending_delivery',
@@ -101,7 +101,7 @@ class OrderController extends Controller
     {
         $validated = $request->validate([
             'payment_type' => ['required', 'in:full,partial'],
-            'paid_amount' => ['exclude_unless:payment_type,partial', 'required', 'numeric', 'decimal:0,2', 'gt:0', 'lte:'.$order->total_amount],
+            'paid_amount' => ['exclude_unless:payment_type,partial', 'required', 'numeric', 'decimal:0,2', 'gte:0', 'lte:' . $order->total_amount],
         ]);
 
         DB::transaction(function () use ($order, $validated): void {
@@ -208,18 +208,18 @@ class OrderController extends Controller
     private function paymentWhatsAppUrl(Order $order, float $paymentAmount): string
     {
         $details = $order->items
-            ->map(fn ($item) => $item->product_name.' - $'.number_format((float) $item->price, 2))
+            ->map(fn($item) => $item->product_name . ' - $' . number_format((float) $item->price, 2))
             ->implode("\n");
         $message = "¡Hola {$order->client->name}! 😊 Muchas gracias por tu abono. Te comparto el resumen actualizado de tu pedido:\n\n"
-            ."📦 *Detalle de tus productos:*\n{$details}\n\n"
-            .'💰 *Total del pedido:* $'.number_format((float) $order->total_amount, 2)."\n"
-            .'✅ *Abono/Anticipo recibido:* $'.number_format($paymentAmount, 2)."\n"
-            .'📌 *Saldo pendiente a liquidar:* $'.number_format((float) $order->due_amount, 2)."\n\n"
-            .'¡Muchas gracias por tu confianza y preferencia! Me avisas si necesitas algo más. ✨' ."\n\n"
-            .'— Tiendita Lupita 🛍️';
+            . "📦 *Detalle de tus productos:*\n{$details}\n\n"
+            . '💰 *Total del pedido:* $' . number_format((float) $order->total_amount, 2) . "\n"
+            . '✅ *Abono/Anticipo recibido:* $' . number_format($paymentAmount, 2) . "\n"
+            . '📌 *Saldo pendiente a liquidar:* $' . number_format((float) $order->due_amount, 2) . "\n\n"
+            . '¡Muchas gracias por tu confianza y preferencia! Me avisas si necesitas algo más. ✨' . "\n\n"
+            . '— Tiendita Lupita 🛍️';
         $phone = preg_replace('/\D+/', '', $order->client->phone);
 
-        return 'https://wa.me/'.$phone.'?text='.rawurlencode($message);
+        return 'https://wa.me/' . $phone . '?text=' . rawurlencode($message);
     }
 
     public function history(): View
