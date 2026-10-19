@@ -12,9 +12,16 @@
                     x-text="visibleCount() + ' ' + (visibleCount() === 1 ? 'pedido por entregar' : 'pedidos por entregar')">
                     {{ $orders->count() }} {{ $orders->count() === 1 ? 'pedido por entregar' : 'pedidos por entregar' }}</p>
             </div>
-            <a href="{{ route('orders.create') }}"
-                class="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--brand)] text-2xl font-light text-white shadow-md"
-                aria-label="Crear pedido">+</a>
+            <a href="{{ route('orders.history') }}"
+                class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 text-sm font-bold text-stone-700 shadow-sm transition hover:border-stone-300"
+                aria-label="Ver historial de pedidos">
+                <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8"
+                    aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 12a9 9 0 1 0 2.64-6.36L3 8m0-5v5h5m4-1v5l3 2" />
+                </svg>
+                Historial
+            </a>
         </div>
 
         <section aria-label="Resumen de ventas" class="mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
