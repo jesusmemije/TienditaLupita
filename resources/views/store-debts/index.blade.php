@@ -32,7 +32,7 @@
                 <p class="mt-1 text-2xl font-black tabular-nums text-emerald-700">${{ number_format($totalPaid, 2) }}</p>
             </article>
             <article class="border border-stone-200 bg-white p-4 shadow-sm">
-                <p class="text-sm font-semibold text-stone-500">Saldo pendiente total</p>
+                <p class="text-sm font-semibold text-stone-500">Saldo pendiente</p>
                 <p class="mt-1 text-2xl font-black tabular-nums text-[var(--brand-dark)]">
                     ${{ number_format($totalOwed, 2) }}</p>
             </article>
