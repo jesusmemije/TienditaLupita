@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/store-debts', [StoreDebtController::class, 'index'])->name('store-debts.index');
     Route::post('/store-debts', [StoreDebtController::class, 'storeDebtor'])->name('store-debts.store');
+    Route::delete('/store-debts/{debtor}', [StoreDebtController::class, 'destroyDebtor'])->name('store-debts.destroy');
     Route::post('/store-debts/{debtor}/charges', [StoreDebtController::class, 'storeCharge'])->name('store-debts.charges.store');
     Route::post('/store-debts/{debtor}/payments', [StoreDebtController::class, 'storePayment'])->name('store-debts.payments.store');
 

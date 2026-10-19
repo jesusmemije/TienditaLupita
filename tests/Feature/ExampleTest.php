@@ -237,18 +237,60 @@ class ExampleTest extends TestCase
         $this->post(route('store-debts.charges.store', $debtor), [
             'description' => 'Sueter azul',
             'amount' => '250.00',
-            'movement_date' => '2026-09-26',
+            'movement_date' => '2000-01-01',
         ])->assertRedirect(route('store-debts.index'));
 
         $this->post(route('store-debts.payments.store', $debtor), [
             'description' => 'Abono efectivo',
             'amount' => '50.00',
-            'movement_date' => '2026-09-26',
         ])->assertRedirect(route('store-debts.index'));
 
         $this->assertSame(200.0, $debtor->fresh()->balance);
         $this->assertDatabaseCount('store_debt_movements', 2);
+        $this->assertDatabaseHas('store_debt_movements', [
+            'debtor_id' => $debtor->id,
+            'type' => 'charge',
+            'movement_date' => now()->toDateString(),
+        ]);
         $this->assertDatabaseCount('orders', 0);
+    }
+
+    public function test_store_fiado_search_and_statistics_are_independent_from_orders(): void
+    {
+        $matchingDebtor = StoreDebtor::create(['name' => 'Marta tienda']);
+        $otherDebtor = StoreDebtor::create(['name' => 'Lucia tienda']);
+        $matchingDebtor->movements()->create(['amount' => 250, 'type' => 'charge', 'movement_date' => today()]);
+        $matchingDebtor->movements()->create(['amount' => 50, 'type' => 'payment', 'movement_date' => today()]);
+        $otherDebtor->movements()->create(['amount' => 100, 'type' => 'charge', 'movement_date' => today()]);
+
+        $this->get(route('store-debts.index', ['search' => 'Marta']))
+            ->assertOk()
+            ->assertViewHas('debtors', fn($debtors): bool => $debtors->count() === 1
+                && $debtors->first()->id === $matchingDebtor->id)
+            ->assertViewHas('totalOwed', 300.0)
+            ->assertViewHas('totalPaid', 50.0)
+            ->assertDontSee('Lucia tienda');
+    }
+
+    public function test_store_debtor_can_be_permanently_deleted_with_all_movements(): void
+    {
+        $debtor = StoreDebtor::create(['name' => 'Marta tienda']);
+        $debtor->movements()->create(['amount' => 250, 'type' => 'charge', 'movement_date' => today()]);
+        $client = Client::create(['name' => 'Ana Lopez', 'phone' => '5215512345678']);
+        $order = Order::create([
+            'client_id' => $client->id,
+            'status' => 'pending_delivery',
+            'total_amount' => 300,
+            'paid_amount' => 0,
+            'due_amount' => 0,
+        ]);
+
+        $this->delete(route('store-debts.destroy', $debtor))
+            ->assertRedirect(route('store-debts.index'));
+
+        $this->assertDatabaseMissing('store_debtors', ['id' => $debtor->id]);
+        $this->assertDatabaseMissing('store_debt_movements', ['debtor_id' => $debtor->id]);
+        $this->assertDatabaseHas('orders', ['id' => $order->id]);
     }
 
     public function test_client_internal_identifier_can_be_updated_without_changing_formal_name(): void
