@@ -61,6 +61,8 @@ class ExampleTest extends TestCase
         $this->assertSame('400.00', $order->due_amount);
         $this->get(route('debts.index'))
             ->assertOk()
+            ->assertSee('Abonó')
+            ->assertSee('$600.00')
             ->assertSee('$400.00')
             ->assertSee('form="settle-order-' . $order->id . '"', false)
             ->assertSee('id="settle-order-' . $order->id . '"', false);
